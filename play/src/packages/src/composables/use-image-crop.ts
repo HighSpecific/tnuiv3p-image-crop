@@ -1,11 +1,4 @@
-import {
-  computed,
-  getCurrentInstance,
-  nextTick,
-  onMounted,
-  reactive,
-  toRefs,
-} from 'vue'
+import { computed, getCurrentInstance, onMounted, reactive, toRefs } from 'vue'
 import { debugWarn, generateId } from '@tuniao/tnui-vue3-uniapp/utils'
 import { useTouchImageHandle } from './use-touch-image-handle'
 
@@ -35,19 +28,12 @@ export const useImageCrop = (props: ImageCropProps) => {
     previewImageRect,
     operationImageWidth,
     operationImageHeight,
-    getContainerRectInfo,
     loadImageErrorHandle,
     loadImageFinishHandle,
     imageTouchStartHandle,
     imageTouchMoveHandle,
     imageTouchEndHandle,
   } = useTouchImageHandle(toRefs(props))
-
-  // 判断图片是否存在
-  const hasImage = computed<boolean>(() => !!props.src)
-  if (!hasImage.value) {
-    debugWarn('[TnImageCrop]', '图片地址不能为空')
-  }
 
   // 实际图片与裁剪框的宽高比例
   const imageCropWidthRatio = computed<number>(
@@ -212,15 +198,10 @@ export const useImageCrop = (props: ImageCropProps) => {
     })
   }
 
-  const initImageCrop = async () => {
-    await getContainerRectInfo()
-    generateCanvasCtx = uni.createCanvasContext(generateCanvasId, instance)
-  }
-
   onMounted(() => {
-    nextTick(() => {
-      initImageCrop()
-    })
+    if (!generateCanvasCtx) {
+      generateCanvasCtx = uni.createCanvasContext(generateCanvasId, instance)
+    }
   })
 
   return {

@@ -81,28 +81,47 @@ export const useTouchImageHandle = (props: ToRefs<ImageCropProps>) => {
     imageOriginHeight.value = height
     // 计算图片的宽高比
     imageRatio = width / height
-    nextTick(() => {
-      setTimeout(() => {
-        // 计算预览图片的宽高，让图片完整显示并且显示在裁剪框中间
-        if (imageRatio > 1) {
-          // 图片宽度大于高度
-          previewImageRect.height = cropRect.height
-          previewImageRect.width = cropRect.height * imageRatio
-          previewImageRect.left =
-            cropRect.left - (previewImageRect.width - cropRect.width) / 2
-          previewImageRect.top = cropRect.top
-        } else {
-          // 图片高度大于宽度
-          previewImageRect.width = cropRect.width
-          previewImageRect.height = cropRect.width / imageRatio
-          previewImageRect.left = cropRect.left
-          previewImageRect.top =
-            cropRect.top - (previewImageRect.height - cropRect.height) / 2
-        }
+    if (!cropRect.width || !cropRect.height) {
+      nextTick(() => {
+        setTimeout(() => {
+          getContainerRectInfo().then(() => {
+            initPreviewImageContainerInfo()
+          })
+        }, 300)
+      })
+    } else {
+      nextTick(() => {
+        initPreviewImageContainerInfo()
+      })
+    }
+  }
 
-        calculateImageCenterPoint()
-      }, 250)
-    })
+  // 初始化预览图片容器相关信息
+  const initPreviewImageContainerInfo = () => {
+    const { width, height } = cropRect
+    if (!width || !height) {
+      setTimeout(() => {
+        initPreviewImageContainerInfo()
+      }, 150)
+      return
+    }
+    if (imageRatio > 1) {
+      // 图片宽度大于高度
+      previewImageRect.height = cropRect.height
+      previewImageRect.width = cropRect.height * imageRatio
+      previewImageRect.left =
+        cropRect.left - (previewImageRect.width - cropRect.width) / 2
+      previewImageRect.top = cropRect.top
+    } else {
+      // 图片高度大于宽度
+      previewImageRect.width = cropRect.width
+      previewImageRect.height = cropRect.width / imageRatio
+      previewImageRect.left = cropRect.left
+      previewImageRect.top =
+        cropRect.top - (previewImageRect.height - cropRect.height) / 2
+    }
+
+    calculateImageCenterPoint()
   }
 
   /* 图片触摸事件 */
@@ -451,7 +470,7 @@ export const useTouchImageHandle = (props: ToRefs<ImageCropProps>) => {
       setTimeout(() => {
         getContainerRectInfo()
         initCount++
-      }, 150)
+      }, 250)
     }
   }
 

@@ -66,7 +66,7 @@ export default {
       }"
     >
       <!-- 显示测试居中点 -->
-      <view
+      <!-- <view
         :style="{
           position: 'absolute',
           zIndex: 1000,
@@ -78,7 +78,7 @@ export default {
           transform: 'translate(-50%, -50%)',
           backgroundColor: 'blue',
         }"
-      />
+      /> -->
       <!-- 图片预览 -->
       <image
         class="tn-image"
